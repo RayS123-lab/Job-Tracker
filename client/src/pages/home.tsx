@@ -4,7 +4,7 @@ import type { Prospect } from "@shared/schema";
 import { STATUSES, INTEREST_LEVELS } from "@shared/schema";
 import { ProspectCard } from "@/components/prospect-card";
 import { AddProspectForm } from "@/components/add-prospect-form";
-import { Briefcase, Plus, Filter } from "lucide-react";
+import { Briefcase, Plus, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -57,24 +57,34 @@ function KanbanColumn({
       className="flex flex-col min-w-[260px] max-w-[320px] w-full bg-muted/40 rounded-md"
       data-testid={`column-${statusSlug}`}
     >
-      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border/50">
-        <div className={`w-2 h-2 rounded-full ${columnColors[status] || "bg-gray-400"}`} />
-        <h3 className="text-sm font-semibold truncate">{status}</h3>
-        <div className="ml-auto flex items-center gap-1.5">
+      <div className="border-b border-border/50">
+        <div className="flex items-center gap-2 px-3 py-2.5">
+          <div className={`w-2 h-2 rounded-full ${columnColors[status] || "bg-gray-400"}`} />
+          <h3 className="text-sm font-semibold truncate">{status}</h3>
+          <Badge
+            variant="secondary"
+            className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] flex items-center justify-center no-default-active-elevate"
+            data-testid={`badge-count-${statusSlug}`}
+          >
+            {filteredProspects.length}
+          </Badge>
+        </div>
+        <div className="px-2 pb-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="ghost"
-                size="icon"
+                variant="outline"
+                size="sm"
                 className={cn(
-                  "h-6 w-6 shrink-0",
-                  interestFilter !== "All" && "text-primary"
+                  "w-full h-7 justify-between text-xs font-normal",
+                  interestFilter !== "All" && "text-primary border-primary/50"
                 )}
               >
-                <Filter className="h-3 w-3" />
+                <span>{interestFilter === "All" ? "All Interest" : interestFilter}</span>
+                <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)]">
               {(["All", ...INTEREST_LEVELS] as InterestFilter[]).map((level) => (
                 <DropdownMenuItem
                   key={level}
@@ -84,18 +94,11 @@ function KanbanColumn({
                     interestFilter === level && "font-semibold bg-accent"
                   )}
                 >
-                  {level}
+                  {level === "All" ? "All Interest" : level}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Badge
-            variant="secondary"
-            className="text-[10px] px-1.5 py-0 h-5 min-w-[20px] flex items-center justify-center no-default-active-elevate"
-            data-testid={`badge-count-${statusSlug}`}
-          >
-            {filteredProspects.length}
-          </Badge>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-2 py-2">
