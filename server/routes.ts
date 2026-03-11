@@ -39,6 +39,17 @@ export async function registerRoutes(
     if (body.roleTitle !== undefined) updates.roleTitle = body.roleTitle;
     if (body.jobUrl !== undefined) updates.jobUrl = body.jobUrl;
     if (body.notes !== undefined) updates.notes = body.notes;
+    if (body.targetSalary !== undefined) {
+      if (body.targetSalary === null) {
+        updates.targetSalary = null;
+      } else {
+        const salary = Number(body.targetSalary);
+        if (!Number.isInteger(salary) || salary <= 0) {
+          return res.status(400).json({ message: "Salary must be a positive integer" });
+        }
+        updates.targetSalary = salary;
+      }
+    }
 
     if (body.status !== undefined) {
       if (!STATUSES.includes(body.status)) {
