@@ -51,6 +51,17 @@ export async function registerRoutes(
       }
     }
 
+    if (body.followUpDate !== undefined) {
+      if (body.followUpDate === null || body.followUpDate === "") {
+        updates.followUpDate = null;
+      } else {
+        if (typeof body.followUpDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(body.followUpDate)) {
+          return res.status(400).json({ message: "Follow-up date must be in YYYY-MM-DD format" });
+        }
+        updates.followUpDate = body.followUpDate;
+      }
+    }
+
     if (body.status !== undefined) {
       if (!STATUSES.includes(body.status)) {
         return res.status(400).json({ message: `Status must be one of: ${STATUSES.join(", ")}` });

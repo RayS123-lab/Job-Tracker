@@ -23,6 +23,7 @@ export const prospects = pgTable("prospects", {
   interestLevel: text("interest_level").notNull().default("Medium"),
   notes: text("notes"),
   targetSalary: integer("target_salary"),
+  followUpDate: text("follow_up_date"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -37,6 +38,7 @@ export const insertProspectSchema = createInsertSchema(prospects).omit({
   jobUrl: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
   targetSalary: z.number().int().positive("Salary must be a positive number").optional().nullable(),
+  followUpDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Follow-up date must be in YYYY-MM-DD format").optional().nullable(),
 });
 
 export type InsertProspect = z.infer<typeof insertProspectSchema>;

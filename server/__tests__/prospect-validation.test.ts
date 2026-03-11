@@ -99,3 +99,70 @@ describe("target salary validation", () => {
     expect(result.errors).toContain("Salary must be a positive integer");
   });
 });
+
+describe("follow-up date validation", () => {
+  test("accepts a valid YYYY-MM-DD date", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      followUpDate: "2025-06-15",
+    });
+
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  test("accepts null follow-up date (optional)", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      followUpDate: null,
+    });
+
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  test("accepts undefined follow-up date (not provided)", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+    });
+
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  test("rejects an invalid date format", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      followUpDate: "06/15/2025",
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Follow-up date must be in YYYY-MM-DD format");
+  });
+
+  test("rejects a non-string follow-up date", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      followUpDate: 20250615,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Follow-up date must be in YYYY-MM-DD format");
+  });
+
+  test("rejects a partial date string", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      followUpDate: "2025-06",
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Follow-up date must be in YYYY-MM-DD format");
+  });
+});

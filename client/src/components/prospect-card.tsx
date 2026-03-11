@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Prospect } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Trash2, Pencil, Flame, ThumbsUp, Minus, DollarSign } from "lucide-react";
+import { ExternalLink, Trash2, Pencil, Flame, ThumbsUp, Minus, DollarSign, CalendarClock, AlertTriangle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -39,6 +39,40 @@ function InterestIndicator({ level }: { level: string }) {
     default:
       return null;
   }
+}
+
+function FollowUpReminder({ dateStr }: { dateStr: string }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const followUp = new Date(dateStr + "T00:00:00");
+
+  const diffDays = Math.floor((followUp.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-red-600 dark:text-red-400" data-testid="follow-up-overdue">
+        <AlertTriangle className="w-3 h-3" />
+        Follow-up overdue
+      </span>
+    );
+  }
+
+  if (diffDays === 0) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400" data-testid="follow-up-today">
+        <CalendarClock className="w-3 h-3" />
+        Follow up today
+      </span>
+    );
+  }
+
+  const formatted = followUp.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return (
+    <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400" data-testid="follow-up-future">
+      <CalendarClock className="w-3 h-3" />
+      Follow up {formatted}
+    </span>
+  );
 }
 
 export function ProspectCard({ prospect }: { prospect: Prospect }) {
@@ -110,6 +144,9 @@ export function ProspectCard({ prospect }: { prospect: Prospect }) {
               <DollarSign className="w-3 h-3" />
               {prospect.targetSalary.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </span>
+          )}
+          {prospect.followUpDate && (
+            <FollowUpReminder dateStr={prospect.followUpDate} />
           )}
         </div>
 
