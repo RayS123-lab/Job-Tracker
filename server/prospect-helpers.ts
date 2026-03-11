@@ -46,6 +46,12 @@ export function validateProspect(data: Record<string, unknown>): { valid: boolea
     }
   }
 
+  if (data.followUpDate !== undefined && data.followUpDate !== null) {
+    if (typeof data.followUpDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(data.followUpDate)) {
+      errors.push("Follow-up date must be in YYYY-MM-DD format");
+    }
+  }
+
   return { valid: errors.length === 0, errors };
 }
 

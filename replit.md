@@ -30,11 +30,12 @@ client/src/
 
 ## Database
 
-Single `prospects` table: id, company_name, role_title, job_url, status, interest_level, notes, target_salary (nullable integer), created_at.
+Single `prospects` table: id, company_name, role_title, job_url, status, interest_level, notes, target_salary (nullable integer), follow_up_date (nullable text YYYY-MM-DD), created_at.
 
 - **Statuses**: Bookmarked, Applied, Phone Screen, Interviewing, Offer, Rejected, Withdrawn
 - **Interest levels**: High, Medium, Low
 - **Target salary**: Optional integer stored as raw number, formatted as USD currency on the card
+- **Follow-up date**: Optional date stored as YYYY-MM-DD text; card shows "Follow up today" (amber), "Follow-up overdue" (red), or formatted future date (blue)
 
 ## API
 
